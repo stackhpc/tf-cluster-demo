@@ -13,6 +13,8 @@ cd terraform
 terraform init # this installs the required providers
 ```
 
+This repo assumes terraform v0.14+ - this contained [breaking changes](https://www.terraform.io/upgrade-guides/0-14.html) so some modifications will be required to use earlier versions.
+
 # Use
 
 Modify `terraform/terraform.tfvars` as appropriate for your cloud.
