@@ -1,0 +1,5 @@
+venv*
+*.lock.hcl
+*tfstate*
+terraform/.terraform
+inventory/hosts
