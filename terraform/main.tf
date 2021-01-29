@@ -45,6 +45,15 @@ variable "cidr" {
     description = "Range in CIDR notation of created subnet"
 }
 
+variable "external_network" {
+  type = string
+  description = "Name of external network"
+}
+
+data "openstack_networking_network_v2" "external_network" {
+  name = var.external_network
+}
+
 resource "openstack_networking_network_v2" "cluster" {
     name           = var.cluster_name
     admin_state_up = "true"
@@ -67,7 +76,6 @@ resource "openstack_compute_instance_v2" "login" {
   }
 }
 
-
 resource "openstack_compute_instance_v2" "compute" {
 
   for_each = toset(var.compute_names)
@@ -80,6 +88,26 @@ resource "openstack_compute_instance_v2" "compute" {
   network {
     uuid = openstack_networking_network_v2.cluster.id
   }
+}
+
+resource "openstack_networking_router_v2" "cluster" {
+  name                = var.cluster_name
+  admin_state_up      = "true"
+  external_network_id = data.openstack_networking_network_v2.external_network.id
+}
+
+resource "openstack_networking_router_interface_v2" "cluster" {
+  router_id = openstack_networking_router_v2.cluster.id
+  subnet_id = openstack_networking_subnet_v2.cluster.id
+}
+
+resource "openstack_networking_floatingip_v2" "login" {
+  pool = data.openstack_networking_network_v2.external_network.name
+}
+
+resource "openstack_compute_floatingip_associate_v2" "login" {
+  floating_ip = openstack_networking_floatingip_v2.login.address
+  instance_id = openstack_compute_instance_v2.login.id
 }
 
 # TODO: needs fixing for case where creation partially fails resulting in "compute.network is empty list of object"

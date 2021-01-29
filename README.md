@@ -15,6 +15,8 @@ terraform init # this installs the required providers
 
 # Use
 
+Modify `terraform/terraform.tfvars` as appropriate for your cloud.
+
 To create a cluster:
 ```
 terraform apply
