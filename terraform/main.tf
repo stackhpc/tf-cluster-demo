@@ -117,6 +117,7 @@ resource "local_file" "hosts" {
                             "cluster_name": var.cluster_name
                             "login": openstack_compute_instance_v2.login,
                             "computes": openstack_compute_instance_v2.compute,
+                            "fip": openstack_networking_floatingip_v2.login
                           },
                           )
   filename = "../inventory/hosts"

@@ -1,6 +1,7 @@
 [all:vars]
 ansible_user=centos
-ssh_proxy=${login.network[0].fixed_ip_v4}
+proxy_addr={fip.address} 
+ansible_ssh_common_args='-o ProxyCommand="ssh {{ ansible_user }}@{{ proxy_addr }} -W %h:%p"'
 openhpc_cluster_name=${cluster_name}
 
 [${cluster_name}_login]
@@ -10,9 +11,6 @@ ${login.name} ansible_host=${login.network[0].fixed_ip_v4} server_networks='${js
 %{ for compute in computes ~}
 ${compute.name} ansible_host=${compute.network[0].fixed_ip_v4} server_networks='${jsonencode({for net in compute.network: net.name => [ net.fixed_ip_v4 ] })}'
 %{ endfor ~}
-
-[${cluster_name}_compute:vars]
-ansible_ssh_common_args='-o ProxyCommand="ssh centos@${login.network[0].fixed_ip_v4} -W %h:%p"'
 
 [cluster_login:children]
 ${cluster_name}_login

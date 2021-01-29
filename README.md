@@ -24,5 +24,5 @@ terraform apply
 
 Example of ansible command:
 ```
-ansible all -i inventory/ -m debug
+ansible all -i inventory/ -m shell -a hostname
 ```
