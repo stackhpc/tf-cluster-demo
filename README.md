@@ -21,3 +21,8 @@ To create a cluster:
 ```
 terraform apply
 ```
+
+Example of ansible command:
+```
+ansible all -i inventory/ -m debug
+```
